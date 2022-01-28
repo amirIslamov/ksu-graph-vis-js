@@ -1,6 +1,7 @@
 const EditorModes = {
     Default: 'Default',
-    Edit: 'Edit'
+    Edit: 'Edit',
+    EditEdge: 'EditEdge'
 }
 
 export default EditorModes;

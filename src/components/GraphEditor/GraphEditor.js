@@ -10,24 +10,27 @@ import ClickSelect from "@antv/graphin/es/behaviors/ClickSelect";
 import AddNode from "./Behaviors/AddNode";
 import AddEdge from "./Behaviors/AddEdge";
 import EditorModes from "./EditorModes";
-import LogItems from "./Behaviors/LogItems";
 import Toolbar from "./Toolbar";
 
 const Behaviors = {
     [EditorModes.Default]: [
-        <DragNode disabled={false} />,
-        <ClickSelect disabled={false} />
+        <DragNode  />,
+        <ClickSelect />
     ],
     [EditorModes.Edit]: [
         <AddNode />,
         <AddEdge />,
         <ClickSelect />
+    ],
+    [EditorModes.EditEdge]: [
+        <DragNode disabled />,
+        <ClickSelect disabled />,
+        <EditEdge />
     ]
 }
 
 const GraphEditor = (props) => {
     const [mode, setMode] = useState(EditorModes.Default);
-
     
     return <Graphin data={{}}>
         { Behaviors[mode] }
@@ -39,8 +42,6 @@ const GraphEditor = (props) => {
 
         <EditNode />
         <EditEdge />
-
-        <LogItems />
     </Graphin>;
 }
 
