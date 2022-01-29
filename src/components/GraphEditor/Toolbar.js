@@ -1,63 +1,59 @@
 import { GraphinContext } from "@antv/graphin";
-import { Toolbar as TBar } from "@antv/graphin-components";
+import { Toolbar as GToolbar } from "@antv/graphin-components";
 import { useContext } from "react";
 import { 
     ZoomInOutlined,
     ZoomOutOutlined,
     EditOutlined,
     EditFilled,
-    RiseOutlined,
-    FallOutlined
+    DeleteFilled,
+    DeleteOutlined,
  } from "@ant-design/icons";
-import EditorModes from "./EditorModes";
+import EditorStates from "./EditorStates";
 
- const EditToggleButton = (props) => {
-    const { mode, setMode } = props;
+const ToggleButton = ({ toggled, toggleOn, toggleOff, onToggleOff, onToggleOn }) => {
+    return (
+        <GToolbar.Item onClick={ toggled ? onToggleOff : onToggleOn }>
+            {
+                toggled 
+                    ? toggleOn
+                    : toggleOff
+            }
+        </GToolbar.Item>
+    );
+}
 
-    const handleToggle = () => {
-        if (mode === EditorModes.Default) {
-            setMode(EditorModes.Edit)
-        } else if (mode === EditorModes.Edit) {
-            setMode(EditorModes.Default)
-        }
-    }
-
-    return <TBar.Item onClick={handleToggle}>
-        {mode === EditorModes.Edit 
-        ? <EditOutlined />
-        : <EditFilled />}
-    </TBar.Item>
- }
-
- const EditEdgeToggleButton = (props) => {
-    const { mode, setMode } = props;
-
-    const handleToggle = () => {
-        if (mode === EditorModes.Default) {
-            setMode(EditorModes.EditEdge)
-        } else if (mode === EditorModes.EditEdge) {
-            setMode(EditorModes.Default)
-        }
-    }
-
-    return <TBar.Item onClick={handleToggle}>
-        {mode === EditorModes.Default 
-        ? <RiseOutlined />
-        : <FallOutlined />}
-    </TBar.Item>
- }
-
-const Toolbar = (props) => {
+const Toolbar = ({ state, enterEdit, enterRemove, enterDefault }) => {
     const { apis } = useContext(GraphinContext);
-    const { mode, setMode } = props;
 
-    return <TBar direction="vertical" style={{ position: 'absolute', right: '0px', top: '0px', width: '40px' }}>
-        <TBar.Item><ZoomInOutlined onClick={() => apis.handleZoomOut()} /></TBar.Item>
-        <TBar.Item><ZoomOutOutlined onClick={() => apis.handleZoomIn()}/></TBar.Item>
-        <TBar.Item><ZoomOutOutlined onClick={() => apis.handleZoomIn()}/></TBar.Item>
-        <EditToggleButton mode={mode} setMode={setMode} />
-        <EditEdgeToggleButton mode={mode} setMode={setMode} />
-    </TBar>
+    const editToggled = state.state === EditorStates.Edit;
+    const removeToggled = state.state === EditorStates.Remove;
+
+    return (
+        <GToolbar direction="vertical" className="editor-toolbar">
+            <GToolbar.Item><ZoomInOutlined onClick={() => apis.handleZoomOut()} /></GToolbar.Item>
+            <GToolbar.Item><ZoomOutOutlined onClick={() => apis.handleZoomIn()}/></GToolbar.Item>
+
+            <GToolbar.Item>
+                <ToggleButton
+                    toggled={editToggled}
+                    toggleOn={<EditFilled />}
+                    toggleOff={<EditOutlined />}
+                    onToggleOn={enterEdit}
+                    onToggleOff={enterDefault}
+                    />
+            </GToolbar.Item>
+            <GToolbar.Item>
+                <ToggleButton
+                    toggled={removeToggled}
+                    toggleOn={<DeleteFilled />}
+                    toggleOff={<DeleteOutlined />}
+                    onToggleOn={enterRemove}
+                    onToggleOff={enterDefault} 
+                    />
+            </GToolbar.Item>
+        </GToolbar>
+    );
 }
 
 export default Toolbar;

@@ -2,23 +2,22 @@ import { GraphinContext } from '@antv/graphin';
 import React from 'react';
 import { v4 } from 'uuid';
 
+let timesCalled = 0;
+let id;
+
 const edgeConfigFactory = (bp) => {
+  if (timesCalled % 2 === 0) id = v4() 
+  timesCalled++;
   const weight = 1;
 
   return {
-    id: v4(),
+    id,
     weight,
-    style: {
-        label: {
-            value: `${weight}`,
-            offset: [0, 0]
-        }
-    },
     ...bp
 }
 }
 
-const CreateEdge = props => {
+const AddEdge = () => {
   const { graph } = React.useContext(GraphinContext);
 
   React.useEffect(() => {
@@ -41,4 +40,5 @@ const CreateEdge = props => {
 
   return null
 };
-export default CreateEdge;
+
+export default AddEdge;

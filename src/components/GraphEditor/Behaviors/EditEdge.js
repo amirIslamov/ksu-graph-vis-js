@@ -1,51 +1,44 @@
 import { GraphinContext } from "@antv/graphin";
 import { ErrorMessage, Field, Form, Formik } from "formik"
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import * as Yup from 'yup';
 
-const EditEdge = (props) => {
-    const [edgeId, setEdgeId] = useState(null);
+const EditEdge = ({ edgeId, enterDefault }) => {
     const { graph } = useContext(GraphinContext);
+    
+    const edge = graph.findById(edgeId);
 
-    useEffect(() => {
-        const handleEdgeClick = e => {
-            const model =  e.item.get('model');
-            setEdgeId(model.id)
-        }
-        const handleNodeClick = e => {
-            setEdgeId(null);
-        }
-        const handeCanvasClick = e => {
-            setEdgeId(null);
-        }
+    const model = edge.getModel();
+    const { weight } = model;
 
-        graph.on('edge:click', handleEdgeClick);
-        graph.on('node:click', handleNodeClick);
-        graph.on('canvas:click', handeCanvasClick);
-
-        return () => {
-            graph.off('edge:click', handleEdgeClick);
-            graph.off('node:click', handleNodeClick);
-            graph.off('canvas:click', handeCanvasClick);
-        }
-    });
+    const handleSubmit = ({ weight: newWeight }, { setSubmitting }) => {
+        setSubmitting(true);
+        graph.emit('beforeweightupdate', { edge: edge });
+        graph.update(edgeId, { ...model, weight: Number(newWeight) });
+        graph.emit('afterweightupdate', { edge: edge });
+        enterDefault();
+    }
 
     return (
-        edgeId 
-            ? <Formik
-                initialValues={graph.findById(edgeId).get('model')}
-                validationSchema={Yup.object({
-                    weight: Yup.number().positive("Weight sould be positive number")
-                })}
-                onSubmit={(values) => { graph.findById(edgeId) }}>
+        <Formik
+            initialValues={{ weight }}
+            validationSchema={Yup.object({
+                weight: Yup.number().positive('Weight should be a positive number')
+            })}
+            onSubmit={handleSubmit}>
+            {formik => (
                 <Form>
-                    <label htmlFor="weight" >Weight:</label>
                     <Field name='weight' />
-                    <ErrorMessage />
+                    <ErrorMessage name='weight' />
+
+                    <button 
+                        type="submit" 
+                        disabled={!formik.dirty || formik.isSubmitting}>Submit</button>
+                    <button type="button" onClick={enterDefault}>Cancel</button>
                 </Form>
-            </Formik>
-            : null
-    )
+            )}
+        </Formik>
+    );
 }
 
 export default EditEdge;

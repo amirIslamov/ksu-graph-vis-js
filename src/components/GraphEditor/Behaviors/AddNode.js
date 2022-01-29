@@ -7,7 +7,7 @@ const nodeConfigFactory = (bp) => ({
     ...bp
 });
 
-const AddNode = (props) => {
+const AddNode = () => {
     const { graph } = useContext(GraphinContext);
 
     useEffect(() => {
