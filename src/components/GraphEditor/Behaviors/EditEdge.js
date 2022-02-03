@@ -1,7 +1,11 @@
 import { GraphinContext } from "@antv/graphin";
+import Modal from "antd/lib/modal/Modal";
 import { ErrorMessage, Field, Form, Formik } from "formik"
 import { useContext } from "react";
 import * as Yup from 'yup';
+import 'antd/dist/antd.css';    
+import { Button } from "antd";
+
 
 const EditEdge = ({ edgeId, enterDefault }) => {
     const { graph } = useContext(GraphinContext);
@@ -27,16 +31,22 @@ const EditEdge = ({ edgeId, enterDefault }) => {
             })}
             onSubmit={handleSubmit}>
             {formik => (
-                <Form>
-                    <Field name='weight' />
-                    <ErrorMessage name='weight' />
-
-                    <button 
-                        type="submit" 
-                        disabled={!formik.dirty || formik.isSubmitting}>Submit</button>
-                    <button type="button" onClick={enterDefault}>Cancel</button>
+                <Form> 
+                    <Modal visible={true} footer={
+                        <div>
+                            <Button 
+                                type="submit" 
+                                disabled={!formik.dirty || formik.isSubmitting}>Submit</Button>
+                            <Button type="button" onClick={enterDefault}>Cancel</Button>
+                        </div>
+                    }
+                    mask={false}>
+                        <label htmlFor="weight">Weight: </label>
+                        <Field name='weight' placeholder='Weight' />
+                        <ErrorMessage name='weight' />    
+                    </Modal>
                 </Form>
-            )}
+            )}    
         </Formik>
     );
 }

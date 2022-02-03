@@ -1,4 +1,5 @@
 import { GraphinContext } from "@antv/graphin";
+import { Button, Card } from "antd";
 import { useContext, useEffect } from "react";
 import BellmanFordAglorithm from "../Algorithms/BellmanFordAlgorithm";
 
@@ -16,10 +17,15 @@ const BellmanFordAlgrithmInitializer = ({ onInitialized, onCancel }) => {
         return () => graph.off('node:click', handleNodeClick);
     })
 
-    return <div>
-            <button onClick={onCancel}>Cancel</button>
+    return <Card
+                style={{ position: 'absolute',
+                         top: '100px',
+                         left: '100px'}}>
             <div>Click to select node</div>
-        </div>
+            <div>
+                <Button onClick={onCancel}>Cancel</Button>  
+            </div>
+        </Card>
 }
 
 export default BellmanFordAlgrithmInitializer;

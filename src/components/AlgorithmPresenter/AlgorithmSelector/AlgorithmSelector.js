@@ -1,3 +1,4 @@
+import { Button, Card } from "antd";
 import BellmanFordAlgrithmInitializer from "../AlgorithmInitializer/BellmanFordAlgrithmInitializer";
 import DijkstraAlgorithmInitializer from "../AlgorithmInitializer/DijkstraAlgrithmInitializer";
 import FloydWarshallAlgrithmInitializer from "../AlgorithmInitializer/FloydWarshallAlgrithmInitializer";
@@ -15,15 +16,16 @@ const initializerMap = {
 }
 
 const AlgorithmSelector = (props) => {
-    const { onSelected, onCancel } = props;
+    const { onSelected } = props;
     const select = (alg) => onSelected(initializerMap[alg])
 
-    return <div>
-        <button onClick={() => select(Algorithms.Dijkstra)}>{Algorithms.Dijkstra}</button>
-        <button onClick={() => select(Algorithms.FloydWarshall)}>{Algorithms.FloydWarshall}</button>
-        <button onClick={() => select(Algorithms.BellmanFord)}>{Algorithms.BellmanFord}</button>
-        <button onClick={onCancel}>Cancel</button>
-    </div>
+    return <Card style={{ position: 'absolute',
+                           top: '100px',
+                           left: '100px'}}>
+        <Button onClick={() => select(Algorithms.Dijkstra)}>{Algorithms.Dijkstra}</Button>
+        <Button onClick={() => select(Algorithms.FloydWarshall)}>{Algorithms.FloydWarshall}</Button>
+        <Button onClick={() => select(Algorithms.BellmanFord)}>{Algorithms.BellmanFord}</Button>
+    </Card>
 }
 
 export default AlgorithmSelector;
