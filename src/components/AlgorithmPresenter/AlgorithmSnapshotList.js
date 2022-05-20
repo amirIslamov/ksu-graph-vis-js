@@ -1,21 +1,22 @@
-import { FastBackwardOutlined, FastForwardOutlined, StepBackwardOutlined, StepForwardOutlined } from "@ant-design/icons/lib/icons";
-import { GraphinContext } from "@antv/graphin";
-import { Toolbar } from "@antv/graphin-components";
-import { useContext, useEffect, useMemo, useState } from "react";
-import * as _ from 'lodash';
+import {
+    FastBackwardOutlined,
+    FastForwardOutlined,
+    StepBackwardOutlined,
+    StepForwardOutlined
+} from "@ant-design/icons/lib/icons";
+import {GraphinContext} from "@antv/graphin";
+import {Toolbar} from "@antv/graphin-components";
+import {useContext, useEffect, useMemo, useState} from "react";
 
 const AlgorithmSnapshotList = ({ algorithm }) => {
     const { graph } = useContext(GraphinContext);
     const beforeEnumerating = useMemo(() => {
-        const data = _.cloneDeep(graph.save())
-        console.log('saving graph data', data)
-        return data;
+        return graph.save();
     }, [graph]);
     const [snapshotIndex, setSnapshotIndex] = useState(0);
     const { snapshotList, enchancer: Enchancer } = useMemo(() => algorithm({ graph }), [algorithm, graph]);
 
     useEffect(() => () => {
-        console.log('restoring graph data', beforeEnumerating);
         graph.changeData(beforeEnumerating);
     }, [beforeEnumerating, graph])
 

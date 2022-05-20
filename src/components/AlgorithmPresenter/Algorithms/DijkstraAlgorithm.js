@@ -2,7 +2,6 @@ import PriorityQueue from "algorithms/data_structures/priority_queue";
 import SingleSourcePathHelper from "./SnapshotPathHelpers/SingleSourcePathHelper";
 import SingleSourceEnchancer from "./Enchancers/SingleSourceEnchancer";
 import DijkstraEnchancer from "./Enchancers/DijkstraEnchancer";
-import * as _ from 'lodash';
 
 const alg = (initialNode, graph) => {
     const snapshotList = [];
@@ -13,7 +12,7 @@ const alg = (initialNode, graph) => {
     
     const helper = new SingleSourcePathHelper(initialNode);
 
-    snapshotList.push({ ...graph.save(), helper: helper.clone() })
+    snapshotList.push({ helper: helper.clone() })
 
     const { addPathUsingParent } = helper;
 
@@ -46,10 +45,9 @@ const alg = (initialNode, graph) => {
             }
 
             snapshotList.push({ 
-                ..._.cloneDeep(graph.save()), 
-                helper: helper.clone(), 
+                helper: helper.clone(),
                 current, 
-                relaxingNeigbour: target,
+                relaxingNeighbour: target,
                 relaxingEdge: id
             })
         }

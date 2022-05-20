@@ -13,7 +13,7 @@ export default class SingleSourcePathHelper {
 
     addPathTo = (targetId, edges) => {
         this.paths.set(targetId, edges);
-        this.distances.set(targetId, edges.reduce(e => e.weight, 0));
+        this.distances.set(targetId, edges.reduce((d, e) => d + e.weight, 0));
     }
     addPathUsingParent = (parentId, targetId, edge) => {
         const { weight } = edge;

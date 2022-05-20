@@ -15,7 +15,7 @@ const alg = (initialNode, graph) => {
 
     const helper = new SingleSourcePathHelper(initialNode);
 
-    snapshotList.push({ ...graph.save(), helper: helper.clone() });
+    snapshotList.push({ helper: helper.clone() });
 
     const { addPathUsingParent } = helper;
 
@@ -30,7 +30,7 @@ const alg = (initialNode, graph) => {
                 });
             }
 
-            snapshotList.push({ ..._.cloneDeep(graph.save()), helper: helper.clone() });
+            snapshotList.push({ helper: helper.clone() });
         }
         
     }

@@ -1,80 +1,111 @@
-import { GraphinContext } from "@antv/graphin";
+import {GraphinContext} from "@antv/graphin";
 import { useContext, useEffect } from "react";
+import * as lodash from "lodash";
 
-const nodeStyles = {
-    default: {
-        fill: 'gray',
-        stroke: 'gray',
-        fillOpacity: 0.1
+
+const NodeState = {
+    Root: 'Root',
+    InTree: 'InTree',
+    NotInTree: 'NotInTree'
+}
+
+const EdgeState = {
+    InTree: 'InTree',
+    NotInTree: 'NotInTree'
+}
+
+const nodeStateStyles = {
+    [NodeState.InTree]: {
+        keyshape: {
+            fill: 'blue',
+            stroke: 'blue',
+            fillOpacity: 0.1
+        }
     },
-    inTree: {
-        fill: 'blue',
-        stroke: 'blue',
-        fillOpacity: 0.1
+    [NodeState.NotInTree]: {
+        keyshape: {
+            fill: 'gray',
+            stroke: 'gray',
+            fillOpacity: 0.1
+        }
     }
-}
+};
 
-const edgeStyles = {
-    default: {
-        stroke: 'gray'
+const edgeStateStyles = {
+    [EdgeState.InTree]: {
+        keyshape: {
+            stroke: 'blue'
+        },
     },
-    inTree: {
-        stroke: 'blue',
-    },
-}
+    [EdgeState.NotInTree]: {
+        keyshape: {
+            stroke: 'gray',
+        }
+    }
+};
+
+const configureStateStyles = lodash.once(graph => {
+    graph.node(() => ({
+        stateStyles: {
+            ...nodeStateStyles
+        }
+    }));
+    graph.edge(() => ({
+        stateStyles: {
+            ...edgeStateStyles
+        }
+    }));
+
+    graph.render();
+});
 
 const SingleSourceEnchancer = ({ snapshot }) => {
     const { graph } = useContext(GraphinContext);
     const { helper } = snapshot;
 
-    const { containsEdge, containsNode, distanceTo } = helper;
+    const { nodeIds, edgeIds } = helper;
 
-    const nodes = graph.getNodes();
-    const edges = graph.getEdges();
+    configureStateStyles(graph);
+
+    console.log(graph.getNodes().map(n => n.getCurrentStatesStyle()));
 
     const styleDefault = () => {
-        nodes.forEach(n => {
-            graph.update(n, { style: { keyshape: nodeStyles.default } })
-        })
+        const edges = new Set(edgeIds());
+        const nodes = new Set(nodeIds());
 
-        edges.forEach(e => {
-            graph.update(e, { style: { keyshape: edgeStyles.default } })
-        })
+        graph.getEdges().filter(e => !edges.has(e.getID())).forEach(e => {
+            graph.priorityState(e, EdgeState.NotInTree);
+        });
+        graph.getNodes().filter(n => !nodes.has(n.getID())).forEach(n => {
+            graph.priorityState(n, NodeState.NotInTree);
+        });
     }
 
     const highlightTree = () => {
-        nodes.forEach(n => {
-            const id = n.get('model').id;
-            if (containsNode(id)) {
-                graph.update(n, { style: { keyshape: nodeStyles.inTree } })
-            }
-        })
+        const edges = new Set(edgeIds());
+        const nodes = new Set(nodeIds());
 
-        edges.forEach(e => {
-            const id = e.get('model').id;
-            if (containsEdge(id)) {
-                graph.update(e, { style: { keyshape: edgeStyles.inTree } })
-            }
-        })
+        graph.getEdges().filter(e => edges.has(e.getID())).forEach(e => {
+            graph.priorityState(e, EdgeState.NotInTree);
+        });
+        graph.getNodes().filter(n => nodes.has(n.getID())).forEach(n => {
+            graph.priorityState(n, NodeState.NotInTree);
+        });
     };
 
-    const showDistances = () => {
-        nodes.forEach(n => {
-            const id = n.get('model').id;
-            graph.update(n, { 
-                style: { 
-                    label: { 
-                        value: String(distanceTo(id)) 
-                    } 
-                } 
-            });
-        })
-    }
+    const clearStates = () => {
+        graph.getEdges().forEach(e => {
+            e.clearStates()
+        });
+        graph.getNodes().forEach(n => {
+            n.clearStates()
+        });
+    };
 
     useEffect(() => {
+        clearStates();
         styleDefault();
         highlightTree();
-        showDistances();
     })
 
     return null;

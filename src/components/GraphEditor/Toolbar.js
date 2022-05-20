@@ -34,24 +34,20 @@ const Toolbar = ({ state, enterEdit, enterRemove, enterDefault }) => {
             <GToolbar.Item><ZoomInOutlined onClick={() => apis.handleZoomOut()} /></GToolbar.Item>
             <GToolbar.Item><ZoomOutOutlined onClick={() => apis.handleZoomIn()}/></GToolbar.Item>
 
-            <GToolbar.Item>
-                <ToggleButton
-                    toggled={editToggled}
-                    toggleOn={<EditFilled />}
-                    toggleOff={<EditOutlined />}
-                    onToggleOn={enterEdit}
-                    onToggleOff={enterDefault}
-                    />
-            </GToolbar.Item>
-            <GToolbar.Item>
-                <ToggleButton
-                    toggled={removeToggled}
-                    toggleOn={<DeleteFilled />}
-                    toggleOff={<DeleteOutlined />}
-                    onToggleOn={enterRemove}
-                    onToggleOff={enterDefault} 
-                    />
-            </GToolbar.Item>
+            <ToggleButton
+                toggled={editToggled}
+                toggleOn={<EditFilled />}
+                toggleOff={<EditOutlined />}
+                onToggleOn={enterEdit}
+                onToggleOff={enterDefault}
+            />
+            <ToggleButton
+                toggled={removeToggled}
+                toggleOn={<DeleteFilled />}
+                toggleOff={<DeleteOutlined />}
+                onToggleOn={enterRemove}
+                onToggleOff={enterDefault}
+            />
         </GToolbar>
     );
 }

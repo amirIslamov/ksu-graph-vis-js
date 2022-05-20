@@ -15,8 +15,7 @@ const EditEdge = ({ edgeId, enterDefault }) => {
     const model = edge.getModel();
     const { weight } = model;
 
-    const handleSubmit = ({ weight: newWeight }, { setSubmitting }) => {
-        setSubmitting(true);
+    const handleSubmit = ({ weight: newWeight }) => {
         graph.emit('beforeweightupdate', { edge: edge });
         graph.update(edgeId, { ...model, weight: Number(newWeight) });
         graph.emit('afterweightupdate', { edge: edge });
@@ -29,18 +28,24 @@ const EditEdge = ({ edgeId, enterDefault }) => {
             validationSchema={Yup.object({
                 weight: Yup.number().positive('Weight should be a positive number')
             })}
-            onSubmit={handleSubmit}>
+        >
             {formik => (
                 <Form> 
-                    <Modal visible={true} footer={
-                        <div>
-                            <Button 
-                                type="submit" 
-                                disabled={!formik.dirty || formik.isSubmitting}>Submit</Button>
-                            <Button type="button" onClick={enterDefault}>Cancel</Button>
-                        </div>
-                    }
-                    mask={false}>
+                    <Modal
+                        title={'Edit edge'}
+                        visible={true}
+                        onCancel={enterDefault}
+                        mask={false}
+                        footer={
+                            <div>
+                                <Button
+                                    type="primary"
+                                    disabled={!formik.dirty}
+                                    onClick={() => { handleSubmit(formik.values) }}
+                                    >Submit</Button>
+                                <Button htmlType="button" onClick={enterDefault}>Cancel</Button>
+                            </div>
+                        }>
                         <label htmlFor="weight">Weight: </label>
                         <Field name='weight' placeholder='Weight' />
                         <ErrorMessage name='weight' />    

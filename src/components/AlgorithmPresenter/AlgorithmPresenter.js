@@ -1,5 +1,4 @@
-import { Minimap } from "@antv/g6-pc";
-import Graphin, { Behaviors, GraphinContext } from "@antv/graphin";
+import { Behaviors, GraphinContext } from "@antv/graphin";
 import { useState } from "react";
 import { useContext } from "react/cjs/react.development";
 import { match, select } from "ts-pattern";

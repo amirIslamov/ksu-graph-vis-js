@@ -1,10 +1,10 @@
 import FloydWarshallAlgorithm from "../Algorithms/FloydWarshallAlgorithm";
 
-const FloydWarshallAlgrithmInitializer = ({ onInitialized }) => {
+const FloydWarshallAlgorithmInitializer = ({ onInitialized }) => {
     return <div>
-        <div>FloydWarshallAlgrithm</div>
-        <button onClick={onInitialized(FloydWarshallAlgorithm())}>Proceed</button>
+        <div>FloydWarshallAlgorithm</div>
+        <button onClick={() => onInitialized(FloydWarshallAlgorithm())}>Proceed</button>
     </div>;
 }
 
-export default FloydWarshallAlgrithmInitializer;
+export default FloydWarshallAlgorithmInitializer;

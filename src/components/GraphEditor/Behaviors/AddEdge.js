@@ -1,4 +1,4 @@
-import { GraphinContext } from '@antv/graphin';
+import {GraphinContext, Utils} from '@antv/graphin';
 import React from 'react';
 import { v4 } from 'uuid';
 
@@ -21,6 +21,14 @@ const AddEdge = () => {
   const { graph } = React.useContext(GraphinContext);
 
   React.useEffect(() => {
+    const processEdges = () => {
+      const data = graph.save();
+      graph.data({
+        ...data,
+        edges: Utils.processEdges(data.edges)
+      });
+    };
+
     graph.addBehaviors(
         {
           type: 'create-edge',
@@ -28,13 +36,16 @@ const AddEdge = () => {
         },
         'default',
       );
-      graph.get('canvas').setCursor('crosshair');
+    graph.get('canvas').setCursor('crosshair');
+
+    graph.on('aftercreateedge', processEdges)
 
     return () => {
       if (graph && !graph.destroyed) {
         graph.removeBehaviors('create-edge', 'default');
         graph.get('canvas').setCursor('default');
       }
+      graph.off('aftercreateedge', processEdges);
     };
   }, [graph]);
 
